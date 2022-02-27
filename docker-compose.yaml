@@ -1,0 +1,33 @@
+version: '3'
+services:
+  nodejs:
+    container_name: nodejs
+    environment:
+      DB_HOST: mongodb
+      DB_NAME: sampledb
+      DB_PORT: 27017
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongodb
+    restart: always
+
+  mongodb:
+    user: "501" # Get the user id using id -u <host_username> for ./data/db folder
+    container_name: mongodb
+    image: mongo:latest
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: root
+    #   MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 27018:27017
+    volumes:
+      - ./data/db:/data/db
+    restart: always
+    command: mongod
+
+# volumes:
+#   data-volume:

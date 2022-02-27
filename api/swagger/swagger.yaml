@@ -1,0 +1,202 @@
+openapi: 3.0.0
+info:
+  title: Node JS API
+  description: |
+    <b>This REST API was generated with Node.js</b>
+  version: 1.0.0
+servers:
+  - url: "http://localhost:8080/api/v1"
+    description: Local development server
+tags:
+  - name: user
+    description: User CRUD endpoints
+# security:
+#   - accessCode:
+#       - read
+#       - write
+paths:
+  /users:
+    x-swagger-router-controller: userController
+    post:
+      summary: Add a new user
+      description: Adds a new user to the DB
+      tags:
+        - user
+      operationId: addUser
+      requestBody:
+        description: Template for adding a new user
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/UserSchema"
+            examples:
+              validAddUser:
+                summary: Add user example request body
+                value:
+                  userName: "Tester"
+                  address: "Melbourne"
+      responses:
+        201:
+          $ref: "#/components/responses/201Created"
+        400:
+          $ref: "#/components/responses/400BadRequest"
+        # 401:
+        #   $ref: "#/components/responses/401Unauthorised"
+        # 403:
+        #   $ref: "#/components/responses/403AccessDenied"
+        500:
+          $ref: "#/components/responses/500InternalServerError"
+
+    get:
+      summary: Fetch all users
+      description: Returns all users stored in DB
+      tags:
+        - user
+      operationId: fetchUsers
+      responses:
+        200:
+          $ref: "#/components/responses/200Success"
+        500:
+          $ref: "#/components/responses/500InternalServerError"
+
+  /users/{id}:
+    x-swagger-router-controller: userController
+    get:
+      summary: Fetch user by user ID
+      description: Returns a user by given user ID
+      tags:
+        - user
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      operationId: fetchUserById
+      responses:
+        200:
+          $ref: "#/components/responses/200Success"
+        # 400:
+        #   $ref: "#/components/responses/400BadRequest"
+#        401:
+#          $ref: "#/components/responses/401Unauthorised"
+        # 403:
+        #   $ref: "#/components/responses/403AccessDenied"
+        404:
+          $ref: "#/components/responses/404NotFound"
+        500:
+          $ref: "#/components/responses/500InternalServerError"
+
+    put:
+      summary: Update user
+      description: Updates a user by given user ID
+      tags:
+        - user
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      operationId: updateUserById
+      requestBody:
+        description: Template for updating the user details
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/UserSchema"
+            examples:
+              validUpdateUserDetails:
+                summary: "Valid Update User Details"
+                value:
+                  userName: "Allen"
+                  address: "Sydney"
+      responses:
+        200:
+          $ref: "#/components/responses/200Success"
+        400:
+          $ref: "#/components/responses/400BadRequest"
+        401:
+          $ref: "#/components/responses/401Unauthorised"
+        403:
+          $ref: "#/components/responses/403AccessDenied"
+        404:
+          $ref: "#/components/responses/404NotFound"
+        500:
+          $ref: "#/components/responses/500InternalServerError"
+          
+    delete:
+      summary: Delete user
+      description: Delets a user stored in the DB by given user ID
+      tags:
+        - user
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      operationId: deleteUserById
+      responses:
+        200:
+          $ref: "#/components/responses/200Success"
+        400:
+          $ref: "#/components/responses/400BadRequest"
+        401:
+          $ref: "#/components/responses/401Unauthorised"
+        403:
+          $ref: "#/components/responses/403AccessDenied"
+        404:
+          $ref: "#/components/responses/404NotFound"
+        500:
+          $ref: "#/components/responses/500InternalServerError"
+
+components:
+  schemas:
+    UserSchema:
+      type: object
+      required:
+        - name
+        - address
+        - gender
+        - age
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        gender:
+          type: string
+        age:
+          type: number
+  # securitySchemes:
+  #   accessCode:
+  #     type: oauth2
+  #     flows:
+  #       authorizationCode:
+  #         authorizationUrl: "http://example.com/oauth/auth"
+  #         tokenUrl: "http://example.com/oauth/token"
+  #         scopes:
+  #           write: allows modifying resources
+  #           read: allows reading resources
+  responses:
+    200Success:
+      description: Request success.
+    201Created:
+      description: New entry added.
+    400BadRequest:
+      description: Your client has issued a malformed or illegal request.
+    401Unauthorised:
+      description: Access token is missing or invalid.
+    403AccessDenied:
+      description: You don"t have permission to access the resource.
+    404NotFound:
+      description: Page not found.
+    500InternalServerError:
+      description: Internal server error occurred.
+
